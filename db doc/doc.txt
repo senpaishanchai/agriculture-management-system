@@ -1,0 +1,28 @@
+1. npm init -y 
+2. npm install express body-parser
+3. npm start
+4. npm install nodemon -D
+5. npm install mysql
+6. npm install dotenv
+
+
+-------------------------
+TABLES
+1. Personnel
+2. Farmer
+3. Admin
+4. User 
+  - firstname
+  - lastname
+  - midname
+  - address
+  - phonenumber
+  - username
+  - password 
+  - age
+  - sex
+  - birthdate
+  - program
+  - role
+5. Program
+  
