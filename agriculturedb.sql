@@ -1,140 +1,91 @@
--- MySQL Workbench Synchronization
--- Generated: 2022-01-29 15:33
--- Model: New Model
--- Version: 1.0
--- Project: Name of the project
--- Author: Wardvisuals
+-- MySQL Workbench Forward Engineering
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
-ALTER TABLE `agriculturedb`.`user` 
-DROP FOREIGN KEY `fk_user_role`;
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema agriculturedb
+-- -----------------------------------------------------
 
-ALTER TABLE `agriculturedb`.`personnel` 
-DROP FOREIGN KEY `fk_personnel_role1`;
+-- -----------------------------------------------------
+-- Schema agriculturedb
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `agriculturedb` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+USE `agriculturedb` ;
 
-ALTER TABLE `agriculturedb`.`admin` 
-DROP FOREIGN KEY `fk_admin_role1`;
+-- -----------------------------------------------------
+-- Table `agriculturedb`.`userRoles`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `agriculturedb`.`userRoles` (
+  `userRoleId` INT NOT NULL AUTO_INCREMENT,
+  `roleName` VARCHAR(45) NULL,
+  PRIMARY KEY (`userRoleId`))
+ENGINE = InnoDB;
 
-ALTER TABLE `agriculturedb`.`farmer` 
-DROP FOREIGN KEY `fk_farmer_farmer_guardian1`;
 
-ALTER TABLE `agriculturedb`.`program` 
-DROP FOREIGN KEY `fk_program_admin1`;
+-- -----------------------------------------------------
+-- Table `agriculturedb`.`userInfo`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `agriculturedb`.`userInfo` (
+  `userInfoId` INT NOT NULL AUTO_INCREMENT,
+  `firstName` VARCHAR(45) NULL,
+  `middleName` VARCHAR(45) NULL,
+  `lastName` VARCHAR(45) NULL,
+  `address` VARCHAR(45) NULL,
+  `birthDate` DATETIME NULL,
+  `age` INT NULL,
+  `gender` VARCHAR(45) NULL,
+  `createdAt` DATETIME NULL,
+  `updatedAt` DATETIME NULL,
+  `userRoleId` INT NOT NULL,
+  PRIMARY KEY (`userInfoId`, `userRoleId`),
+  INDEX `fk_user_info_role1_idx` (`userRoleId` ASC) VISIBLE,
+  CONSTRAINT `fk_user_info_role1`
+    FOREIGN KEY (`userRoleId`)
+    REFERENCES `agriculturedb`.`userRoles` (`userRoleId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
-ALTER TABLE `agriculturedb`.`farmer_request` 
-DROP FOREIGN KEY `fk_farmer_request_farmer1`;
 
-ALTER TABLE `agriculturedb`.`approved_farmer_request` 
-DROP FOREIGN KEY `fk_approved_request_personnel1`;
+-- -----------------------------------------------------
+-- Table `agriculturedb`.`user`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `agriculturedb`.`user` (
+  `userId` INT NOT NULL AUTO_INCREMENT,
+  `userName` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(45) NOT NULL,
+  `mobileNumber` INT(11) NOT NULL,
+  `userInfoId` INT NOT NULL,
+  PRIMARY KEY (`userId`),
+  INDEX `fk_user_user_info_idx` (`userInfoId` ASC) VISIBLE,
+  CONSTRAINT `fk_user_user_info`
+    FOREIGN KEY (`userInfoId`)
+    REFERENCES `agriculturedb`.`userInfo` (`userInfoId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
-ALTER TABLE `agriculturedb`.`approved_farmer_request_has_farmer_request` 
-DROP FOREIGN KEY `fk_approved_farmer_request_has_farmer_request_approved_farmer1`,
-DROP FOREIGN KEY `fk_approved_farmer_request_has_farmer_request_farmer_request1`;
 
-ALTER TABLE `agriculturedb`.`demograph` 
-DROP FOREIGN KEY `fk_demograph_farmer1`;
-
-ALTER TABLE `agriculturedb`.`user` 
-ADD COLUMN `username` VARCHAR(45) NOT NULL AFTER `is_verified`,
-ADD COLUMN `password` VARCHAR(45) NOT NULL AFTER `username`,
-CHANGE COLUMN `mobile_number` `mobile_number` BIGINT(11) NOT NULL ,
-CHANGE COLUMN `age` `age` INT(5) NOT NULL ,
-CHANGE COLUMN `is_verified` `is_verified` TINYINT(4) NOT NULL ;
-
-ALTER TABLE `agriculturedb`.`role` 
-CHANGE COLUMN `admin` `admin` TEXT(10) NOT NULL ,
-CHANGE COLUMN `farmer` `farmer` TEXT(10) NOT NULL ;
-
-ALTER TABLE `agriculturedb`.`farmer_guardian` 
-CHANGE COLUMN `mobile_number` `mobile_number` BIGINT(11) NOT NULL ;
-
-ALTER TABLE `agriculturedb`.`demograph` 
-CHANGE COLUMN `zip_code` `zip_code` INT(10) NOT NULL ;
-
-ALTER TABLE `agriculturedb`.`user` 
-ADD CONSTRAINT `fk_user_role`
-  FOREIGN KEY (`role_id`)
-  REFERENCES `agriculturedb`.`role` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
-
-ALTER TABLE `agriculturedb`.`personnel` 
-ADD CONSTRAINT `fk_personnel_role1`
-  FOREIGN KEY (`role_id`)
-  REFERENCES `agriculturedb`.`role` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
-
-ALTER TABLE `agriculturedb`.`admin` 
-ADD CONSTRAINT `fk_admin_role1`
-  FOREIGN KEY (`role_id`)
-  REFERENCES `agriculturedb`.`role` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
-
-ALTER TABLE `agriculturedb`.`farmer` 
-DROP FOREIGN KEY `fk_farmer_role1`;
-
-ALTER TABLE `agriculturedb`.`farmer` ADD CONSTRAINT `fk_farmer_role1`
-  FOREIGN KEY (`role_id`)
-  REFERENCES `agriculturedb`.`role` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_farmer_farmer_guardian1`
-  FOREIGN KEY (`farmer_guardian_id`)
-  REFERENCES `agriculturedb`.`farmer_guardian` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
-
-ALTER TABLE `agriculturedb`.`program` 
-DROP FOREIGN KEY `fk_program_personnel1`;
-
-ALTER TABLE `agriculturedb`.`program` ADD CONSTRAINT `fk_program_personnel1`
-  FOREIGN KEY (`personnel_id`)
-  REFERENCES `agriculturedb`.`personnel` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_program_admin1`
-  FOREIGN KEY (`admin_id`)
-  REFERENCES `agriculturedb`.`admin` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
-
-ALTER TABLE `agriculturedb`.`farmer_request` 
-ADD CONSTRAINT `fk_farmer_request_farmer1`
-  FOREIGN KEY (`farmer_id`)
-  REFERENCES `agriculturedb`.`farmer` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
-
-ALTER TABLE `agriculturedb`.`approved_farmer_request` 
-ADD CONSTRAINT `fk_approved_request_personnel1`
-  FOREIGN KEY (`personnel_id`)
-  REFERENCES `agriculturedb`.`personnel` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
-
-ALTER TABLE `agriculturedb`.`approved_farmer_request_has_farmer_request` 
-ADD CONSTRAINT `fk_approved_farmer_request_has_farmer_request_approved_farmer1`
-  FOREIGN KEY (`approved_farmer_request_id`)
-  REFERENCES `agriculturedb`.`approved_farmer_request` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_approved_farmer_request_has_farmer_request_farmer_request1`
-  FOREIGN KEY (`farmer_request_id`)
-  REFERENCES `agriculturedb`.`farmer_request` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
-
-ALTER TABLE `agriculturedb`.`demograph` 
-ADD CONSTRAINT `fk_demograph_farmer1`
-  FOREIGN KEY (`farmer_id` , `farmer_farmer_guardian_id`)
-  REFERENCES `agriculturedb`.`farmer` (`id` , `farmer_guardian_id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
+-- -----------------------------------------------------
+-- Table `agriculturedb`.`userPermissions`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `agriculturedb`.`userPermissions` (
+  `userPermissionId` INT NOT NULL AUTO_INCREMENT,
+  `permissionName` VARCHAR(100) NULL,
+  `userRoles_userRoleId` INT NOT NULL,
+  PRIMARY KEY (`userPermissionId`),
+  INDEX `fk_userPermissions_userRoles1_idx` (`userRoles_userRoleId` ASC) VISIBLE,
+  CONSTRAINT `fk_userPermissions_userRoles1`
+    FOREIGN KEY (`userRoles_userRoleId`)
+    REFERENCES `agriculturedb`.`userRoles` (`userRoleId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
