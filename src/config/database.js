@@ -7,28 +7,30 @@ const databaseConfig = {
     database: process.env.MYSQL_DATABASE,
 };
 
-const db = mysql.createPool(databaseConfig);
+const pool = mysql.createPool(databaseConfig);
 
-const database = (query) => {
+const connection = (query, data) => {
     return new Promise((resolve, reject) => {
-        db.getConnection((err, sql) => {
+        pool.getConnection((err, sql) => {
             if (err) {
-                console.log("Database error: ", err);
+                console.log(`❌ Error Connecting to Database `);
                 reject(err);
             } else {
-                sql.query(query, (err, results) => {
-                    if (err) {
-                        console.log("Query error: ", err);
-                        reject(err);
-                    } else {
-                        resolve(results);
-                    }
+                console.log(`✔ Database Connected Successfully!`);
 
-                    sql.release();
-                });
+                if (query) {
+                    sql.query(query, [...data], (err, results) => {
+                        if (err) {
+                            console.log(`Query error: ${err}`);
+                            reject(err);
+                        } else resolve(results);
+
+                        sql.release();
+                    });
+                }
             }
         });
     });
 };
 
-module.exports = database;
+module.exports = connection;

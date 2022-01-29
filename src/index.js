@@ -5,6 +5,9 @@ const bodyParser = require("body-parser");
 /* Import Routes */
 const authRoute = require("./user/user.route");
 
+/* Import Database */
+const connectDB = require("./config/database");
+
 /* App */
 const app = express();
 
@@ -17,6 +20,10 @@ app.use(express.json());
 app.use("/", authRoute);
 
 /* Server */
-app.listen(process.env.PORT, () =>
-    console.log(`✅ http://localhost:${process.env.PORT}`)
-);
+app.listen(process.env.PORT, () => {
+    connectDB();
+
+    console.log(
+        `\n\n✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅\n✔ http://localhost:${process.env.PORT}`
+    );
+});
