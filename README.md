@@ -1,4 +1,4 @@
-# Agrilcutre Management System
+# Agriculture Management System
 
 ✔ School Project: A web application that allows an admin to manage agricultural things. This will be built using NodeJS, ReactJS, and MySQL.
 
