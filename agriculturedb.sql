@@ -18,38 +18,53 @@ CREATE SCHEMA IF NOT EXISTS `agriculturedb` DEFAULT CHARACTER SET utf8mb4 COLLAT
 USE `agriculturedb` ;
 
 -- -----------------------------------------------------
--- Table `agriculturedb`.`userRoles`
+-- Table `agriculturedb`.`tokens`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `agriculturedb`.`userRoles` (
+CREATE TABLE IF NOT EXISTS `agriculturedb`.`tokens` (
+  `tokenId` INT NOT NULL,
+  `accessToken` VARCHAR(45) NULL DEFAULT NULL,
+  `refreshToken` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`tokenId`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `agriculturedb`.`userroles`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `agriculturedb`.`userroles` (
   `userRoleId` INT NOT NULL AUTO_INCREMENT,
-  `roleName` VARCHAR(45) NULL,
+  `roleName` VARCHAR(45) NULL DEFAULT NULL,
   PRIMARY KEY (`userRoleId`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `agriculturedb`.`userInfo`
+-- Table `agriculturedb`.`userinfo`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `agriculturedb`.`userInfo` (
+CREATE TABLE IF NOT EXISTS `agriculturedb`.`userinfo` (
   `userInfoId` INT NOT NULL AUTO_INCREMENT,
-  `firstName` VARCHAR(45) NULL,
-  `middleName` VARCHAR(45) NULL,
-  `lastName` VARCHAR(45) NULL,
-  `address` VARCHAR(45) NULL,
-  `birthDate` DATETIME NULL,
-  `age` INT NULL,
-  `gender` VARCHAR(45) NULL,
-  `createdAt` DATETIME NULL,
-  `updatedAt` DATETIME NULL,
+  `firstName` VARCHAR(45) NULL DEFAULT NULL,
+  `middleName` VARCHAR(45) NULL DEFAULT NULL,
+  `lastName` VARCHAR(45) NULL DEFAULT NULL,
+  `address` VARCHAR(45) NULL DEFAULT NULL,
+  `birthDate` DATETIME NULL DEFAULT NULL,
+  `age` INT NULL DEFAULT NULL,
+  `gender` VARCHAR(45) NULL DEFAULT NULL,
+  `createdAt` DATETIME NULL DEFAULT NULL,
+  `updatedAt` DATETIME NULL DEFAULT NULL,
   `userRoleId` INT NOT NULL,
   PRIMARY KEY (`userInfoId`, `userRoleId`),
   INDEX `fk_user_info_role1_idx` (`userRoleId` ASC) VISIBLE,
   CONSTRAINT `fk_user_info_role1`
     FOREIGN KEY (`userRoleId`)
-    REFERENCES `agriculturedb`.`userRoles` (`userRoleId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    REFERENCES `agriculturedb`.`userroles` (`userRoleId`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
@@ -59,33 +74,34 @@ CREATE TABLE IF NOT EXISTS `agriculturedb`.`user` (
   `userId` INT NOT NULL AUTO_INCREMENT,
   `userName` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NOT NULL,
-  `mobileNumber` INT(11) NOT NULL,
-  `userInfoId` INT NOT NULL,
+  `mobileNumber` VARCHAR(45) NULL DEFAULT NULL,
+  `userInfoId` INT NULL DEFAULT NULL,
   PRIMARY KEY (`userId`),
-  INDEX `fk_user_user_info_idx` (`userInfoId` ASC) VISIBLE,
-  CONSTRAINT `fk_user_user_info`
+  INDEX `fk_userRegister_userInfo1_idx` (`userInfoId` ASC) VISIBLE,
+  CONSTRAINT `fk_userRegister_userInfo1`
     FOREIGN KEY (`userInfoId`)
-    REFERENCES `agriculturedb`.`userInfo` (`userInfoId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    REFERENCES `agriculturedb`.`userinfo` (`userInfoId`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `agriculturedb`.`userPermissions`
+-- Table `agriculturedb`.`userpermissions`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `agriculturedb`.`userPermissions` (
+CREATE TABLE IF NOT EXISTS `agriculturedb`.`userpermissions` (
   `userPermissionId` INT NOT NULL AUTO_INCREMENT,
-  `permissionName` VARCHAR(100) NULL,
+  `permissionName` VARCHAR(100) NULL DEFAULT NULL,
   `userRoles_userRoleId` INT NOT NULL,
   PRIMARY KEY (`userPermissionId`),
   INDEX `fk_userPermissions_userRoles1_idx` (`userRoles_userRoleId` ASC) VISIBLE,
   CONSTRAINT `fk_userPermissions_userRoles1`
     FOREIGN KEY (`userRoles_userRoleId`)
-    REFERENCES `agriculturedb`.`userRoles` (`userRoleId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    REFERENCES `agriculturedb`.`userroles` (`userRoleId`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
