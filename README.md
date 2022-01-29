@@ -8,5 +8,5 @@
 
 ## Team
 
-[Edward](https://github.com/wardvisual)
+[Edward](https://github.com/wardvisual) <br/>
 [France](https://github.com/france-stack007)
